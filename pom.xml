@@ -498,9 +498,9 @@
     <distributionManagement>
 	
     <repository>
-    <id>sample-repo</id>
-    <name>samplerepo</name>
-    <url>http://18.224.72.141:8081/nexus/content/repositories/sample-repo</url>
+    <id>sample-repo2</id>
+    <name>samplerepo2</name>
+    <url>http://18.224.72.141:8081/nexus/content/repositories/sample-repo2</url>
     </repository>
 
     <snapshotRepository>
