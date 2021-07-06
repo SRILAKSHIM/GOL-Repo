@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     tools { 
-        maven 'Maven' 
+        maven 'Maven 3.8.1' 
       
     }
 stages { 
@@ -28,7 +28,7 @@ stages {
        // Run the maven build
 
       //if (isUnix()) {
-         sh 'mvn -Dmaven.test.failure.ignore=true install'
+         sh 'mvn clean package'
       //} 
       //else {
       //   bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
@@ -36,9 +36,10 @@ stages {
 //}
    }
  
-  stage('Unit Test Results') {
+  stage('Results') {
       steps {
       junit '**/target/surefire-reports/TEST-*.xml'
+      archiveArtifacts 'target/*.war'
       
      }
  }
@@ -57,7 +58,7 @@ stages {
 }
      stage('Artifact upload') {
       steps {
-       nexusPublisher nexusInstanceId: '1234', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'gameoflife-web/target/gameoflife.war']], mavenCoordinate: [artifactId: 'gameoflife', groupId: 'com.wakaleo.gameoflife', packaging: 'war', version: '$BUILD_NUMBER']]]
+       nexusPublisher nexusInstanceId: '123', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'gameoflife-web/target/gameoflife.war']], mavenCoordinate: [artifactId: 'gameoflife', groupId: 'com.wakaleo.gameoflife', packaging: 'war', version: '$BUILD_NUMBER']]]
       }
      }
     stage('Deploy War') {
@@ -67,11 +68,11 @@ stages {
  }
 }
 post {
-       success {
-            archiveArtifacts 'gameoflife-web/target/*.war'
+      success {
+            mail to:"kranthirevol@gmail.com", subject:"SUCCESS: ${currentBuild.fullDisplayName}", body: "Build success"
         }
-       failure {
-           mail to:"raknas000@gmail.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
+        failure {
+            mail to:"kranthirevol@gmail.com", subject:"FAILURE: ${currentBuild.fullDisplayName}", body: "Build failed"
         }
     }       
 }
