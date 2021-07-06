@@ -13,7 +13,7 @@ stages {
       // Get some code from a GitHub repository
 
       //git 'https://github.com/raknas999/game-of-life.git'
-      git 'https://github.com/raknas999/GOL-Repo.git'
+      git 'https://github.com/SRILAKSHIM/GOL-Repo.git'
 
       // Get the Maven tool.
      
@@ -28,7 +28,7 @@ stages {
        // Run the maven build
 
       //if (isUnix()) {
-         sh 'mvn clean package'
+         sh 'mvn -Dmaven.test.failure.ignore=true install'
       //} 
       //else {
       //   bat(/"${mvnHome}\bin\mvn" -Dmaven.test.failure.ignore clean package/)
@@ -36,10 +36,9 @@ stages {
 //}
    }
  
-  stage('Results') {
+  stage('Unit Test Results') {
       steps {
       junit '**/target/surefire-reports/TEST-*.xml'
-      archiveArtifacts 'target/*.war'
       
      }
  }
@@ -58,7 +57,7 @@ stages {
 }
      stage('Artifact upload') {
       steps {
-       nexusPublisher nexusInstanceId: '123', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'gameoflife-web/target/gameoflife.war']], mavenCoordinate: [artifactId: 'gameoflife', groupId: 'com.wakaleo.gameoflife', packaging: 'war', version: '$BUILD_NUMBER']]]
+       nexusPublisher nexusInstanceId: '1234', nexusRepositoryId: 'releases', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'gameoflife-web/target/gameoflife.war']], mavenCoordinate: [artifactId: 'gameoflife', groupId: 'com.wakaleo.gameoflife', packaging: 'war', version: '$BUILD_NUMBER']]]
       }
      }
     stage('Deploy War') {
